@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CarDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.car_name as carName
+        ,a.car_driver as carDriver
+        ,a.repair_content as repairContent
+        ,a.car_types as carTypes
+        ,a.car_number as carNumber
+        ,a.start as start
+        ,a.end as end
+        ,a.sell_money as sellMoney
+        ,a.create_time as createTime
+    </sql>
+
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.CarView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM car  a
+
+        <where>
+            <if test=" params.carName != '' and params.carName != null and params.carName != 'null' ">
+                and a.car_name like CONCAT('%',#{params.carName},'%')
+            </if>
+            <if test=" params.carDriver != '' and params.carDriver != null and params.carDriver != 'null' ">
+                and a.car_driver like CONCAT('%',#{params.carDriver},'%')
+            </if>
+            <if test=" params.repairContent != '' and params.repairContent != null and params.repairContent != 'null' ">
+                and a.repair_content like CONCAT('%',#{params.repairContent},'%')
+            </if>
+            <if test=" params.carTypes != '' and params.carTypes != null and params.carTypes != 'null' ">
+                and a.car_types = #{params.carTypes}
+            </if>
+            <if test=" params.carNumber != '' and params.carNumber != null and params.carNumber != 'null' ">
+                and a.car_number like CONCAT('%',#{params.carNumber},'%')
+            </if>
+            <if test=" params.start != '' and params.start != null and params.start != 'null' ">
+                and a.start like CONCAT('%',#{params.start},'%')
+            </if>
+            <if test=" params.end != '' and params.end != null and params.end != 'null' ">
+                and a.end like CONCAT('%',#{params.end},'%')
+            </if>
+            <if test=" params.sellMoneyStart != '' and params.sellMoneyStart != null and params.sellMoneyStart != 'null' ">
+                and a.sell_money &gt;= #{params.sellMoneyStart}
+            </if>
+            <if test=" params.sellMoneyEnd != '' and params.sellMoneyEnd != null and params.sellMoneyEnd != 'null' ">
+                and a.sell_money &lt;= #{params.sellMoneyEnd}
+            </if>
+
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>

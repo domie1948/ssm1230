@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.DiaoduDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.car_id as carId
+        ,a.scheduling_types as schedulingTypes
+        ,a.create_time as createTime
+    </sql>
+
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.DiaoduView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,car.car_name as carName
+        ,car.car_driver as carDriver
+        ,car.repair_content as repairContent
+        ,car.car_types as carTypes
+        ,car.car_number as carNumber
+        ,car.start as start
+        ,car.end as end
+        ,car.sell_money as sellMoney
+
+        FROM diaodu  a
+        left JOIN car car ON a.car_id = car.id
+
+        <where>
+            <if test=" params.carId != '' and params.carId != null and params.carId != 'null' ">
+                and a.car_id like CONCAT('%',#{params.carId},'%')
+            </if>
+            <if test=" params.schedulingTypes != '' and params.schedulingTypes != null and params.schedulingTypes != 'null' ">
+                and a.scheduling_types = #{params.schedulingTypes}
+            </if>
+
+            <if test=" params.carName != '' and params.carName != null and params.carName != 'null' ">
+                and car.car_name like CONCAT('%',#{params.carName},'%')
+            </if>
+            <if test=" params.carDriver != '' and params.carDriver != null and params.carDriver != 'null' ">
+                and car.car_driver like CONCAT('%',#{params.carDriver},'%')
+            </if>
+            <if test=" params.repairContent != '' and params.repairContent != null and params.repairContent != 'null' ">
+                and car.repair_content like CONCAT('%',#{params.repairContent},'%')
+            </if>
+            <if test=" params.carTypes != '' and params.carTypes != null and params.carTypes != 'null' ">
+                and car.car_types = #{params.carTypes}
+            </if>
+            <if test=" params.carNumber != '' and params.carNumber != null and params.carNumber != 'null' ">
+                and car.car_number like CONCAT('%',#{params.carNumber},'%')
+            </if>
+            <if test=" params.start != '' and params.start != null and params.start != 'null' ">
+                and car.start like CONCAT('%',#{params.start},'%')
+            </if>
+            <if test=" params.end != '' and params.end != null and params.end != 'null' ">
+                and car.end like CONCAT('%',#{params.end},'%')
+            </if>
+            <if test=" params.sellMoneyStart != '' and params.sellMoneyStart != null and params.sellMoneyStart != 'null' ">
+                and car.sell_money &gt;= #{params.sellMoneyStart}
+            </if>
+            <if test=" params.sellMoneyEnd != '' and params.sellMoneyEnd != null and params.sellMoneyEnd != 'null' ">
+                and car.sell_money &lt;= #{params.sellMoneyEnd}
+            </if>
+        </where>
+        order by a.scheduling_types,a.id desc
+    </select>
+
+</mapper>
